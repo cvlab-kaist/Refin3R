@@ -9,10 +9,14 @@
 <p align="center">KAIST&nbsp;AI<br><sub>† Corresponding author</sub></p>
 
 <p align="center">
-  <a href="https://cvlab-kaist.github.io/Refin3R"><img src="https://img.shields.io/badge/Project_Page-8057A2?style=flat-square" alt="Project Page"></a>
+  <a href="https://cvlab-kaist.github.io/Refin3R"><img src="assets/readme/project-page.svg" alt="Project Page" height="24"></a>
+  &nbsp;
+  <a href="https://arxiv.org/abs/2611.23051"><img src="assets/readme/arxiv.svg" alt="Arxiv" height="24"></a>
 </p>
 
-> **TL;DR** &nbsp; *Refine feed-forward point maps (e.g. DA3) with SfM points: **dense and accurate**, even where SfM has no coverage.*
+<p align="center">
+  <strong>TL;DR</strong> &nbsp; <em>Refine feed-forward point maps (e.g. DA3) with SfM points: <strong>dense and accurate</strong>.</em>
+</p>
 
 <p align="center">
   <img src="assets/readme/teaser.webp" alt="Refin3R turns a partial SfM reconstruction into a dense reconstruction; error maps compare DA3, SfM, GGPT, and Refin3R" width="100%">
