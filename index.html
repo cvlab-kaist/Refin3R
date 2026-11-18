@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=7d3fdf1070cc">
+  <link rel="stylesheet" href="style.css?v=71aaa41de295">
   <script src="app.js?v=23f01b8acdbb" defer></script>
   <title>Refin3R: Geometry-Guided Refinement for Feed-Forward 3D Reconstruction</title>
 </head>
@@ -57,6 +57,10 @@
         <a class="button" href="assets/paper/refin3r.pdf?v=29244873b035" download="refin3r.pdf">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6"/></svg>
           Paper
+        </a>
+        <a class="button" href="https://arxiv.org/abs/2611.23051" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+          arXiv
         </a>
         <a class="button" href="https://github.com/cvlab-kaist/Refin3R">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6"/></svg>
@@ -387,13 +391,22 @@
       <div class="container">
         <div class="citation-heading">
           <h2 id="bibtex-title">BibTeX</h2>
-          <div class="citation-actions" hidden>
-            <a href="assets/data/refin3r.bib" download>Download .bib</a>
+          <div class="citation-actions">
+            <a href="assets/data/refin3r.bib?v=23daf00a2bc0" download="refin3r.bib">Download .bib</a>
             <button class="button copy-button" id="copy-bibtex" type="button" hidden>Copy</button>
           </div>
         </div>
-        <!-- Add the official BibTeX here after the arXiv release. -->
-        <pre tabindex="0" aria-label="BibTeX citation"><code id="citation"></code><span class="citation-placeholder" id="citation-placeholder">To be updated</span></pre>
+        <!-- Keep this citation in sync with assets/data/refin3r.bib and the main README. -->
+        <pre tabindex="0" aria-label="BibTeX citation"><code id="citation">@misc{lee2026refin3rgeometryguidedrefinementfeedforward,
+      title={Refin3R: Geometry-Guided Refinement for Feed-Forward 3D Reconstruction},
+      author={Jongmin Lee and Jaeyeong Kim and Seungryong Kim},
+      year={2026},
+      eprint={2611.23051},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2611.23051},
+}
+</code><span class="citation-placeholder" id="citation-placeholder" hidden>To be updated</span></pre>
         <p class="sr-only" id="copy-status" role="status"></p>
       </div>
     </section>

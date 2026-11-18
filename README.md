@@ -29,9 +29,9 @@ The published URL is `https://cvlab-kaist.github.io/Refin3R/`. Keep `index.html`
 - `app.js`: active section navigation, qualitative and quantitative dataset transitions, scroll reveals, figure enlargement, and BibTeX copying. The paper, default results table, and full comparison figure remain accessible without JavaScript.
 - `assets/images/`: optimized WebP figures, original figure PDFs, and the social-preview image.
 - `assets/paper/refin3r.pdf`: the supplied manuscript.
-- `assets/data/refin3r.bib`: empty until the arXiv release. The page shows “To be updated” separately from the citation. Add the official citation here, in `index.html`, and in the `main` README; the placeholder disappears and copy/download controls appear when the page citation is populated.
+- `assets/data/refin3r.bib`: the supplied arXiv citation. Keep this file, the citation in `index.html`, and the `main` README in sync. The page displays the citation with copy and download controls.
 
-The paper does not contain an arXiv identifier. The Paper button therefore links to the provided PDF, and the citation displays “To be updated” until the official BibTeX is available. The author names, affiliation, overview, method descriptions, and result figures and tables come from the supplied manuscript. Only verified author homepage links are included.
+The supplied BibTeX cites arXiv:2611.23051. The Paper button links to the provided PDF, and the adjacent arXiv button opens https://arxiv.org/abs/2611.23051. The author names, affiliation, overview, method descriptions, and result figures and tables come from the supplied manuscript. Only verified author homepage links are included.
 
 ## Regenerate figures
 
@@ -49,7 +49,7 @@ Quantitative results use the same five dataset tabs. ScanNet++, ETH3D, and Tanks
 
 The `--content-spacing` CSS variable scales the main content's spacing to 85%. Main content is 90% of the original width, with 88px between TL;DR and Teaser (64px on mobile). Sections and panels rise 44px and fade in over 900ms after entering the viewport. Panels re-arm only after moving entirely below the viewport. Both result viewers have previous/next arrows and directional slide transitions; the arrows flank the panels on desktop and the dataset heading on mobile. Reduced-motion preferences disable these effects. Rapid dataset changes resolve to the most recently selected dataset.
 
-CSS, JavaScript, and paper URLs include content-hash version parameters to refresh cached files. Update the relevant parameter when replacing one of those files.
+CSS, JavaScript, paper, and BibTeX URLs include content-hash version parameters to refresh cached files. Update the relevant parameter when replacing one of those files.
 
 `assets/images/qualitative-scenes.webp` is a lossless extraction of the original image embedded in `main_qual_2x.pdf`. SVG viewports display the individual panels without altering their pixels or AUC annotations. Viewport coordinates are defined in `app.js`; update them if the source figure layout changes. Regenerate just this asset without replacing the paper or other figures:
 

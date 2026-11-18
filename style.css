@@ -222,6 +222,9 @@ body:has(dialog[open]) { overflow: hidden; }
   .results-table { min-width: 520px; font-size: 13px; }
   .results-table th, .results-table td { padding: 8px 10px; }
 }
+@media (max-width: 480px) {
+  .publication-links { display: grid; grid-template-columns: repeat(2, max-content); }
+}
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; }
