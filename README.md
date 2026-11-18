@@ -106,4 +106,14 @@ cd Refin3R
 
 ## Citation
 
-🚧 To be updated
+```bibtex
+@misc{lee2026refin3rgeometryguidedrefinementfeedforward,
+      title={Refin3R: Geometry-Guided Refinement for Feed-Forward 3D Reconstruction},
+      author={Jongmin Lee and Jaeyeong Kim and Seungryong Kim},
+      year={2026},
+      eprint={2611.23051},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2611.23051},
+}
+```
