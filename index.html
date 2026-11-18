@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Refin3R refines feed-forward 3D reconstruction with Structure-from-Motion geometry through a dual-branch 2D–3D network.">
+  <meta name="theme-color" content="#fafafa">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Refin3R: Geometry-Guided Refinement for Feed-Forward 3D Reconstruction">
+  <meta property="og:description" content="Dense image features meet multi-view geometry. Refin3R propagates accurate SfM geometry beyond its coverage to refine dense 3D point maps.">
+  <meta property="og:url" content="https://cvlab-kaist.github.io/Refin3R/">
+  <meta property="og:image" content="https://cvlab-kaist.github.io/Refin3R/assets/images/social-preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="citation_title" content="Refin3R: Geometry-Guided Refinement for Feed-Forward 3D Reconstruction">
+  <meta name="citation_author" content="Jongmin Lee">
+  <meta name="citation_author" content="Jaeyeong Kim">
+  <meta name="citation_author" content="Seungryong Kim">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_pdf_url" content="https://cvlab-kaist.github.io/Refin3R/assets/paper/refin3r.pdf?v=29244873b035">
+  <link rel="canonical" href="https://cvlab-kaist.github.io/Refin3R/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=7d3fdf1070cc">
+  <script src="app.js?v=23f01b8acdbb" defer></script>
+  <title>Refin3R: Geometry-Guided Refinement for Feed-Forward 3D Reconstruction</title>
+</head>
+<body>
+  <a class="skip-link" href="#tldr">Skip to content</a>
+
+  <nav class="section-nav" aria-label="On this page">
+    <a href="#tldr" aria-current="location">TL;DR</a>
+    <a href="#teaser">Teaser</a>
+    <a href="#method">Method</a>
+    <a href="#qualitative">Qualitative Results</a>
+    <a href="#quantitative">Quantitative Results</a>
+    <a href="#contributions">Contributions</a>
+    <a href="#bibtex">BibTeX</a>
+  </nav>
+
+  <div class="page-shell">
+  <header class="hero">
+    <div class="container title-container">
+      <h1><span class="title-accent">Refin3R</span><span class="title-separator">:</span> Geometry-Guided Refinement<br class="desktop-break"> for Feed-Forward 3D Reconstruction</h1>
+      <p class="publication-venue">Preprint 2026</p>
+      <div class="publication-authors">
+        <a href="https://icetea-cv.github.io/">Jongmin Lee</a>
+        <a href="https://kjae0.github.io/">Jaeyeong Kim</a>
+        <span><a href="https://cvlab.kaist.ac.kr/members">Seungryong Kim</a><sup>†</sup></span>
+      </div>
+      <p class="publication-affiliation">KAIST AI</p>
+      <p class="author-note">† Corresponding author</p>
+      <nav class="publication-links" aria-label="Publication resources">
+        <a class="button" href="assets/paper/refin3r.pdf?v=29244873b035" download="refin3r.pdf">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h6"/></svg>
+          Paper
+        </a>
+        <a class="button" href="https://github.com/cvlab-kaist/Refin3R">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 6-6 6 6 6m8-12 6 6-6 6"/></svg>
+          Code
+        </a>
+        <a class="button" href="#bibtex">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5H6a2 2 0 0 0-2 2v5h5v7H3m18-14h-3a2 2 0 0 0-2 2v5h5v7h-6"/></svg>
+          BibTeX
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <aside class="tldr container" id="tldr" aria-labelledby="tldr-title">
+      <h2 id="tldr-title">TL;DR</h2>
+      <p>
+        <span class="tldr-lead"><strong>Refin3R</strong> refines feed-forward point maps with SfM points</span>
+        <span class="tldr-context">by leveraging both 2D image context and 3D scene structure,</span>
+        <span class="tldr-result">yielding <strong>Dense &amp; Accurate 3D Reconstruction.</strong></span>
+      </p>
+    </aside>
+
+    <section class="section teaser-section" id="teaser" aria-labelledby="teaser-title">
+      <div class="container">
+        <h2 id="teaser-title">Teaser</h2>
+        <figure>
+          <a class="figure-link" href="assets/images/teaser.webp" data-zoom data-title="Refin3R overview" data-pdf="assets/images/teaser.pdf" aria-label="Enlarge the Refin3R overview">
+            <img src="assets/images/teaser.webp" width="2600" height="1227" fetchpriority="high" alt="Two indoor scenes: partial SfM reconstruction is refined into dense point maps, including regions without SfM coverage. Error maps compare DA3, SfM, GGPT, and Refin3R.">
+          </a>
+        </figure>
+        <div class="prose teaser-copy">
+          <p>
+            <span class="teaser-caption-line">Feed-forward models such as Depth Anything 3 (DA3) produce dense but less accurate point maps.</span>
+            <span class="teaser-caption-line"><strong>Refin3R</strong> uses SfM points to refine these dense predictions, improving accuracy even beyond SfM coverage.</span>
+            <span class="teaser-caption-line">The error maps on the right compare DA3, SfM, GGPT, and Refin3R.</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-bordered" id="method" aria-labelledby="method-title">
+      <div class="container">
+        <h2 id="method-title">Method</h2>
+        <figure>
+          <a class="figure-link" href="assets/images/architecture.webp" data-zoom data-title="Refin3R architecture" data-pdf="assets/images/architecture.pdf" aria-label="Enlarge the Refin3R architecture">
+            <img src="assets/images/architecture.webp" width="2800" height="739" loading="lazy" decoding="async" alt="Refin3R pipeline: feed-forward depth, geometry features, and partial SfM depth enter interacting 2D and 3D U-Nets. Spatial propagation fuses the estimates into refined depth and point maps.">
+          </a>
+        </figure>
+        <div class="method-stages">
+          <article class="method-card">
+            <div class="stage-topline">
+              <p class="stage-label">Stage 1</p>
+              <h3>Input configuration</h3>
+            </div>
+            <p>We start with dense feed-forward predictions and accurate but incomplete SfM geometry.</p>
+          </article>
+          <article class="method-card">
+            <div class="stage-topline">
+              <p class="stage-label">Stage 2</p>
+              <h3>Dual-branch refinement</h3>
+            </div>
+            <p>Refin3R uses image context and SfM points from multiple views to improve the initial predictions.</p>
+          </article>
+          <article class="method-card">
+            <div class="stage-topline">
+              <p class="stage-label">Stage 3</p>
+              <h3>Spatial fusion</h3>
+            </div>
+            <p>The refined estimates are combined into dense, accurate 3D reconstructions.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="qualitative" aria-labelledby="qualitative-title">
+      <div class="container">
+        <h2 id="qualitative-title">Qualitative Results</h2>
+        <div class="qualitative-carousel" role="region" aria-roledescription="carousel" aria-label="Qualitative results by dataset">
+          <div class="dataset-tabs" role="tablist" aria-label="Dataset">
+            <button type="button" role="tab" id="dataset-scannetpp" aria-selected="true" aria-controls="qualitative-panel" data-dataset="0">ScanNet++</button>
+            <button type="button" role="tab" id="dataset-eth3d" aria-selected="false" aria-controls="qualitative-panel" data-dataset="1" tabindex="-1">ETH3D</button>
+            <button type="button" role="tab" id="dataset-tanks-and-temples" aria-selected="false" aria-controls="qualitative-panel" data-dataset="2" tabindex="-1">Tanks and Temples</button>
+            <button type="button" role="tab" id="dataset-4d-dress" aria-selected="false" aria-controls="qualitative-panel" data-dataset="3" tabindex="-1">4D-DRESS</button>
+            <button type="button" role="tab" id="dataset-mv-dvrk" aria-selected="false" aria-controls="qualitative-panel" data-dataset="4" tabindex="-1">MV-dVRK</button>
+          </div>
+          <div class="carousel-frame qualitative-reveal">
+          <button type="button" class="carousel-arrow carousel-previous" id="previous-scene" aria-label="Previous qualitative dataset" aria-controls="qualitative-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+          <div id="qualitative-panel" role="tabpanel" aria-labelledby="dataset-scannetpp" tabindex="0">
+            <div class="scene-toolbar">
+              <div class="scene-heading">
+                <h3 id="scene-title">ScanNet++</h3>
+                <p>Point error maps</p>
+              </div>
+            </div>
+            <div class="comparison-panels">
+              <figure class="comparison-panel">
+                <figcaption>Depth Anything 3</figcaption>
+                <button class="scene-image" type="button" data-scene="da3" aria-label="Enlarge the ScanNet++ Depth Anything 3 result">
+                  <svg class="scene-svg" viewBox="934 140 369 256" role="img" aria-labelledby="da3-image-title">
+                    <title id="da3-image-title">Depth Anything 3 point error map on ScanNet++</title>
+                    <defs><clipPath id="da3-clip"><rect x="934" y="140" width="369" height="256"/></clipPath></defs>
+                    <image href="assets/images/qualitative-scenes.webp" x="0" y="-12.2283" width="3200" height="1579.6575" preserveAspectRatio="none" clip-path="url(#da3-clip)"/>
+                  </svg>
+                </button>
+              </figure>
+              <figure class="comparison-panel">
+                <figcaption>Any2Full <span>(w/ SfM prior)</span></figcaption>
+                <button class="scene-image" type="button" data-scene="any2full" aria-label="Enlarge the ScanNet++ Any2Full result">
+                  <svg class="scene-svg" viewBox="1308 140 369 256" role="img" aria-labelledby="any2full-image-title">
+                    <title id="any2full-image-title">Any2Full point error map on ScanNet++</title>
+                    <defs><clipPath id="any2full-clip"><rect x="1308" y="140" width="369" height="256"/></clipPath></defs>
+                    <image href="assets/images/qualitative-scenes.webp" x="0" y="-12.2283" width="3200" height="1579.6575" preserveAspectRatio="none" clip-path="url(#any2full-clip)"/>
+                  </svg>
+                </button>
+              </figure>
+              <figure class="comparison-panel">
+                <figcaption>Pi3X <span>(w/ SfM prior)</span></figcaption>
+                <button class="scene-image" type="button" data-scene="pi3x" aria-label="Enlarge the ScanNet++ Pi3X result">
+                  <svg class="scene-svg" viewBox="1682 140 369 256" role="img" aria-labelledby="pi3x-image-title">
+                    <title id="pi3x-image-title">Pi3X point error map on ScanNet++</title>
+                    <defs><clipPath id="pi3x-clip"><rect x="1682" y="140" width="369" height="256"/></clipPath></defs>
+                    <image href="assets/images/qualitative-scenes.webp" x="0" y="-12.2283" width="3200" height="1579.6575" preserveAspectRatio="none" clip-path="url(#pi3x-clip)"/>
+                  </svg>
+                </button>
+              </figure>
+              <figure class="comparison-panel">
+                <figcaption>BLASt3R</figcaption>
+                <button class="scene-image" type="button" data-scene="blast3r" aria-label="Enlarge the ScanNet++ BLASt3R result">
+                  <svg class="scene-svg" viewBox="2056 140 369 256" role="img" aria-labelledby="blast3r-image-title">
+                    <title id="blast3r-image-title">BLASt3R point error map on ScanNet++</title>
+                    <defs><clipPath id="blast3r-clip"><rect x="2056" y="140" width="369" height="256"/></clipPath></defs>
+                    <image href="assets/images/qualitative-scenes.webp" x="0" y="-12.2283" width="3200" height="1579.6575" preserveAspectRatio="none" clip-path="url(#blast3r-clip)"/>
+                  </svg>
+                </button>
+              </figure>
+              <figure class="comparison-panel">
+                <figcaption>GGPT <span>(w/ DA3)</span></figcaption>
+                <button class="scene-image" type="button" data-scene="ggpt" aria-label="Enlarge the ScanNet++ GGPT result">
+                  <svg class="scene-svg" viewBox="2430 140 369 256" role="img" aria-labelledby="ggpt-image-title">
+                    <title id="ggpt-image-title">GGPT point error map on ScanNet++</title>
+                    <defs><clipPath id="ggpt-clip"><rect x="2430" y="140" width="369" height="256"/></clipPath></defs>
+                    <image href="assets/images/qualitative-scenes.webp" x="0" y="-12.2283" width="3200" height="1579.6575" preserveAspectRatio="none" clip-path="url(#ggpt-clip)"/>
+                  </svg>
+                </button>
+              </figure>
+              <figure class="comparison-panel comparison-ours">
+                <figcaption>Refin3R <span>(w/ DA3)</span></figcaption>
+                <button class="scene-image" type="button" data-scene="ours" aria-label="Enlarge the ScanNet++ Refin3R result">
+                  <svg class="scene-svg" viewBox="2805 140 369 256" role="img" aria-labelledby="ours-image-title">
+                    <title id="ours-image-title">Refin3R point error map on ScanNet++</title>
+                    <defs><clipPath id="ours-clip"><rect x="2805" y="140" width="369" height="256"/></clipPath></defs>
+                    <image href="assets/images/qualitative-scenes.webp" x="0" y="-12.2283" width="3200" height="1579.6575" preserveAspectRatio="none" clip-path="url(#ours-clip)"/>
+                  </svg>
+                </button>
+              </figure>
+            </div>
+          </div>
+          <button type="button" class="carousel-arrow carousel-next" id="next-scene" aria-label="Next qualitative dataset" aria-controls="qualitative-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+          </div>
+          <div class="carousel-controls">
+            <span class="carousel-count" id="scene-count" aria-hidden="true">1 / 5</span>
+          </div>
+          <p class="sr-only" id="scene-status" role="status" aria-live="polite" aria-atomic="true">ScanNet++, 1 of 5</p>
+          <noscript><p class="no-script-note"><a href="assets/images/qualitative-results.webp">View results for all five datasets</a>.</p></noscript>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="quantitative" aria-labelledby="quantitative-title">
+      <div class="container">
+        <h2 id="quantitative-title">Quantitative Results</h2>
+        <div class="dataset-tabs quantitative-tabs" role="tablist" aria-label="Quantitative datasets">
+          <button type="button" role="tab" id="quant-dataset-scannetpp" aria-selected="true" aria-controls="quant-panel-scannetpp" data-quant-dataset="0">ScanNet++</button>
+          <button type="button" role="tab" id="quant-dataset-eth3d" aria-selected="false" aria-controls="quant-panel-eth3d" data-quant-dataset="1" tabindex="-1">ETH3D</button>
+          <button type="button" role="tab" id="quant-dataset-tanks-and-temples" aria-selected="false" aria-controls="quant-panel-tanks-and-temples" data-quant-dataset="2" tabindex="-1">Tanks and Temples</button>
+          <button type="button" role="tab" id="quant-dataset-4d-dress" aria-selected="false" aria-controls="quant-panel-4d-dress" data-quant-dataset="3" tabindex="-1">4D-DRESS</button>
+          <button type="button" role="tab" id="quant-dataset-mv-dvrk" aria-selected="false" aria-controls="quant-panel-mv-dvrk" data-quant-dataset="4" tabindex="-1">MV-dVRK</button>
+        </div>
+        <div class="carousel-frame quantitative-reveal">
+        <button type="button" class="carousel-arrow carousel-previous" id="previous-quantitative" aria-label="Previous quantitative dataset" aria-controls="quantitative-stage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+        <div class="quantitative-stage" id="quantitative-stage">
+          <div class="quantitative-panel" id="quant-panel-scannetpp" role="tabpanel" aria-labelledby="quant-dataset-scannetpp" tabindex="0">
+            <div class="quantitative-heading"><h3>ScanNet++</h3><p class="results-metric">AUC@1 / AUC@5 cm (%) <span>↑ Higher is better</span></p></div>
+            <div class="table-scroll" role="region" aria-label="ScanNet++ benchmark results, scroll horizontally on smaller screens" tabindex="0">
+              <table class="results-table" id="benchmark-scannetpp">
+                <caption class="sr-only">ScanNet++ reconstruction accuracy from Table 1. Bold indicates the best result; underlining indicates the second best.</caption>
+                <thead><tr><th scope="col">Method</th><th scope="col">4 views</th><th scope="col">8 views</th><th scope="col">16 views</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Depth Anything 3</th><td>1.6 / 8.8</td><td>0.9 / 7.1</td><td>0.6 / 4.7</td></tr>
+                  <tr><th scope="row">Pi3X (RGB only)</th><td>14.7 / 50.4</td><td>15.3 / 53.9</td><td>14.3 / 54.8</td></tr>
+                  <tr><th scope="row">VGGT-Ω</th><td>2.1 / 16.3</td><td>1.3 / 13.5</td><td>1.0 / 11.9</td></tr>
+                  <tr class="group-start"><th scope="row">MapAnything</th><td>15.6 / 43.9</td><td>13.3 / 43.8</td><td>12.5 / 42.0</td></tr>
+                  <tr><th scope="row">Pi3X (SfM prior)</th><td>17.3 / 52.1</td><td>18.2 / 55.5</td><td>18.3 / 58.3</td></tr>
+                  <tr class="group-start"><th scope="row">Any2Full</th><td>22.9 / 50.0</td><td>28.6 / 59.6</td><td>32.0 / 65.1</td></tr>
+                  <tr><th scope="row">Murre</th><td>16.6 / 44.1</td><td>21.3 / 53.1</td><td>23.9 / 57.4</td></tr>
+                  <tr class="group-start"><th scope="row">MASt3R-SfM</th><td>11.5 / 30.8</td><td>15.6 / 41.0</td><td>18.9 / 49.2</td></tr>
+                  <tr><th scope="row">BLASt3R</th><td>27.8 / 57.1</td><td>34.5 / 64.7</td><td>39.2 / 67.5</td></tr>
+                  <tr><th scope="row">GGPT (w/ DA3)</th><td>21.6 / 45.0</td><td>27.4 / 56.9</td><td>31.8 / 64.5</td></tr>
+                  <tr><th scope="row">GGPT (w/ Pi3X)</th><td>25.6 / 56.7</td><td>29.5 / 62.8</td><td>34.8 / 67.8</td></tr>
+                  <tr class="ours group-start"><th scope="row">Refin3R (w/ DA3)</th><td><span class="score-second">31.5</span> / <span class="score-second">60.6</span></td><td><span class="score-second">37.5</span> / <span class="score-second">68.8</span></td><td><span class="score-second">43.4</span> / <span class="score-second">74.0</span></td></tr>
+                  <tr class="ours"><th scope="row">Refin3R (w/ Pi3X)</th><td><strong class="score-best">33.7</strong> / <strong class="score-best">65.6</strong></td><td><strong class="score-best">39.6</strong> / <strong class="score-best">71.4</strong></td><td><strong class="score-best">45.2</strong> / <strong class="score-best">75.7</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="table-note"><strong>Bold</strong>: best. <span class="score-second">Underlined</span>: second best. <a href="assets/paper/refin3r.pdf?v=29244873b035#page=7" target="_blank" rel="noopener">Table 1 of the paper</a>.</p>
+          </div>
+          <div class="quantitative-panel" id="quant-panel-eth3d" role="tabpanel" aria-labelledby="quant-dataset-eth3d" tabindex="0" hidden>
+            <div class="quantitative-heading"><h3>ETH3D</h3><p class="results-metric">AUC@1 / AUC@5 cm (%) <span>↑ Higher is better</span></p></div>
+            <div class="table-scroll" role="region" aria-label="ETH3D benchmark results, scroll horizontally on smaller screens" tabindex="0">
+              <table class="results-table" id="benchmark-eth3d">
+                <caption class="sr-only">ETH3D reconstruction accuracy from Table 1. Bold indicates the best result; underlining indicates the second best.</caption>
+                <thead><tr><th scope="col">Method</th><th scope="col">4 views</th><th scope="col">8 views</th><th scope="col">16 views</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Depth Anything 3</th><td>8.9 / 31.9</td><td>8.0 / 29.6</td><td>7.0 / 27.1</td></tr>
+                  <tr><th scope="row">Pi3X (RGB only)</th><td>9.8 / 34.8</td><td>6.1 / 28.8</td><td>4.8 / 26.4</td></tr>
+                  <tr><th scope="row">VGGT-Ω</th><td>4.1 / 25.6</td><td>3.1 / 22.2</td><td>2.2 / 17.2</td></tr>
+                  <tr class="group-start"><th scope="row">MapAnything</th><td>6.8 / 27.3</td><td>6.3 / 25.0</td><td>5.3 / 25.2</td></tr>
+                  <tr><th scope="row">Pi3X (SfM prior)</th><td>15.6 / 43.7</td><td>12.9 / 40.0</td><td>10.2 / 37.9</td></tr>
+                  <tr class="group-start"><th scope="row">Any2Full</th><td>24.8 / 49.3</td><td>28.5 / 55.4</td><td>30.4 / 58.9</td></tr>
+                  <tr><th scope="row">Murre</th><td>13.0 / 34.4</td><td>13.6 / 35.4</td><td>15.2 / 38.7</td></tr>
+                  <tr class="group-start"><th scope="row">MASt3R-SfM</th><td>15.0 / 37.4</td><td>17.5 / 37.7</td><td>16.7 / 39.0</td></tr>
+                  <tr><th scope="row">BLASt3R</th><td>11.7 / 31.2</td><td>13.6 / 34.9</td><td>14.2 / 38.4</td></tr>
+                  <tr><th scope="row">GGPT (w/ DA3)</th><td>27.7 / 56.2</td><td>28.4 / 58.7</td><td>32.6 / 64.4</td></tr>
+                  <tr><th scope="row">GGPT (w/ Pi3X)</th><td>31.7 / 60.0</td><td>32.7 / 62.0</td><td>39.4 / 69.1</td></tr>
+                  <tr class="ours group-start"><th scope="row">Refin3R (w/ DA3)</th><td><span class="score-second">42.7</span> / <span class="score-second">67.3</span></td><td><strong class="score-best">46.4</strong> / <span class="score-second">69.9</span></td><td><strong class="score-best">53.6</strong> / <span class="score-second">76.1</span></td></tr>
+                  <tr class="ours"><th scope="row">Refin3R (w/ Pi3X)</th><td><strong class="score-best">43.1</strong> / <strong class="score-best">67.6</strong></td><td><span class="score-second">46.3</span> / <strong class="score-best">70.2</strong></td><td><span class="score-second">53.3</span> / <strong class="score-best">76.4</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="table-note"><strong>Bold</strong>: best. <span class="score-second">Underlined</span>: second best. <a href="assets/paper/refin3r.pdf?v=29244873b035#page=7" target="_blank" rel="noopener">Table 1 of the paper</a>.</p>
+          </div>
+          <div class="quantitative-panel" id="quant-panel-tanks-and-temples" role="tabpanel" aria-labelledby="quant-dataset-tanks-and-temples" tabindex="0" hidden>
+            <div class="quantitative-heading"><h3>Tanks and Temples</h3><p class="results-metric">AUC@1 / AUC@5 cm (%) <span>↑ Higher is better</span></p></div>
+            <div class="table-scroll" role="region" aria-label="Tanks and Temples benchmark results, scroll horizontally on smaller screens" tabindex="0">
+              <table class="results-table" id="benchmark-tanks-and-temples">
+                <caption class="sr-only">Tanks and Temples reconstruction accuracy from Table 1. Bold indicates the best result; underlining indicates the second best.</caption>
+                <thead><tr><th scope="col">Method</th><th scope="col">4 views</th><th scope="col">8 views</th><th scope="col">16 views</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Depth Anything 3</th><td>1.1 / 8.7</td><td>0.7 / 7.1</td><td>0.5 / 6.3</td></tr>
+                  <tr><th scope="row">Pi3X (RGB only)</th><td>5.1 / 25.2</td><td>3.9 / 23.5</td><td>3.4 / 22.7</td></tr>
+                  <tr><th scope="row">VGGT-Ω</th><td>2.0 / 16.0</td><td>1.5 / 14.6</td><td>0.9 / 9.9</td></tr>
+                  <tr class="group-start"><th scope="row">MapAnything</th><td>3.4 / 18.7</td><td>2.5 / 15.1</td><td>2.2 / 14.7</td></tr>
+                  <tr><th scope="row">Pi3X (SfM prior)</th><td>8.9 / 33.6</td><td>8.1 / 34.9</td><td>6.4 / 30.7</td></tr>
+                  <tr class="group-start"><th scope="row">Any2Full</th><td>12.1 / 34.4</td><td>13.1 / 42.1</td><td>13.9 / 42.7</td></tr>
+                  <tr><th scope="row">Murre</th><td>5.5 / 22.2</td><td>6.6 / 25.7</td><td>7.7 / 28.2</td></tr>
+                  <tr class="group-start"><th scope="row">MASt3R-SfM</th><td>14.9 / 35.1</td><td>18.2 / 41.6</td><td>17.7 / 41.4</td></tr>
+                  <tr><th scope="row">BLASt3R</th><td>4.1 / 19.1</td><td>5.2 / 22.7</td><td>5.0 / 22.8</td></tr>
+                  <tr><th scope="row">GGPT (w/ DA3)</th><td>14.9 / 36.9</td><td>16.0 / 46.1</td><td>16.0 / 47.1</td></tr>
+                  <tr><th scope="row">GGPT (w/ Pi3X)</th><td><span class="score-second">16.1</span> / 38.5</td><td>19.1 / 49.7</td><td>19.7 / 49.4</td></tr>
+                  <tr class="ours group-start"><th scope="row">Refin3R (w/ DA3)</th><td>15.6 / <strong class="score-best">40.3</strong></td><td><span class="score-second">20.5</span> / <strong class="score-best">52.1</strong></td><td><span class="score-second">21.8</span> / <strong class="score-best">53.1</strong></td></tr>
+                  <tr class="ours"><th scope="row">Refin3R (w/ Pi3X)</th><td><strong class="score-best">17.1</strong> / <span class="score-second">39.7</span></td><td><strong class="score-best">21.5</strong> / <span class="score-second">52.0</span></td><td><strong class="score-best">22.4</strong> / <span class="score-second">52.3</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="table-note"><strong>Bold</strong>: best. <span class="score-second">Underlined</span>: second best. <a href="assets/paper/refin3r.pdf?v=29244873b035#page=7" target="_blank" rel="noopener">Table 1 of the paper</a>.</p>
+          </div>
+          <div class="quantitative-panel" id="quant-panel-4d-dress" role="tabpanel" aria-labelledby="quant-dataset-4d-dress" tabindex="0" hidden>
+            <div class="quantitative-heading"><h3>4D-DRESS</h3><p class="results-metric">AUC (%) <span>↑ Higher is better</span></p></div>
+            <div class="table-scroll" role="region" aria-label="4D-DRESS benchmark results, scroll horizontally on smaller screens" tabindex="0">
+              <table class="results-table" id="benchmark-4d-dress">
+                <caption class="sr-only">4D-DRESS reconstruction accuracy from Table 2. Bold indicates the best result; underlining indicates the second best.</caption>
+                <thead><tr><th scope="col">Method</th><th scope="col">AUC@1 cm</th><th scope="col">AUC@5 cm</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Depth Anything 3</th><td>2.1</td><td>6.3</td></tr>
+                  <tr><th scope="row">Pi3X (RGB only)</th><td>3.6</td><td>11.8</td></tr>
+                  <tr><th scope="row">VGGT-Ω</th><td>42.0</td><td>81.6</td></tr>
+                  <tr class="group-start"><th scope="row">MapAnything</th><td>7.2</td><td>29.8</td></tr>
+                  <tr><th scope="row">Pi3X (SfM prior)</th><td>45.7</td><td>76.9</td></tr>
+                  <tr class="group-start"><th scope="row">Any2Full</th><td>63.2</td><td>79.7</td></tr>
+                  <tr><th scope="row">Murre</th><td>48.5</td><td>74.1</td></tr>
+                  <tr class="group-start"><th scope="row">MASt3R-SfM</th><td>51.1</td><td>70.1</td></tr>
+                  <tr><th scope="row">BLASt3R</th><td>13.9</td><td>39.6</td></tr>
+                  <tr><th scope="row">GGPT (w/ DA3)</th><td>50.7</td><td>71.2</td></tr>
+                  <tr><th scope="row">GGPT (w/ Pi3X)</th><td>64.6</td><td>82.1</td></tr>
+                  <tr class="ours group-start"><th scope="row">Refin3R (w/ DA3)</th><td><span class="score-second">75.1</span></td><td><span class="score-second">83.6</span></td></tr>
+                  <tr class="ours"><th scope="row">Refin3R (w/ Pi3X)</th><td><strong class="score-best">80.2</strong></td><td><strong class="score-best">89.6</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="table-note"><strong>Bold</strong>: best. <span class="score-second">Underlined</span>: second best. <a href="assets/paper/refin3r.pdf?v=29244873b035#page=8" target="_blank" rel="noopener">Table 2 of the paper</a>.</p>
+          </div>
+          <div class="quantitative-panel" id="quant-panel-mv-dvrk" role="tabpanel" aria-labelledby="quant-dataset-mv-dvrk" tabindex="0" hidden>
+            <div class="quantitative-heading"><h3>MV-dVRK</h3><p class="results-metric">AUC (%) <span>↑ Higher is better</span></p></div>
+            <div class="table-scroll" role="region" aria-label="MV-dVRK benchmark results, scroll horizontally on smaller screens" tabindex="0">
+              <table class="results-table" id="benchmark-mv-dvrk">
+                <caption class="sr-only">MV-dVRK reconstruction accuracy from Table 2. Bold indicates the best result; underlining indicates the second best.</caption>
+                <thead><tr><th scope="col">Method</th><th scope="col">AUC@1 mm</th><th scope="col">AUC@5 mm</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Depth Anything 3</th><td>17.2</td><td>50.7</td></tr>
+                  <tr><th scope="row">Pi3X (RGB only)</th><td>3.9</td><td>21.1</td></tr>
+                  <tr><th scope="row">VGGT-Ω</th><td>17.7</td><td>54.0</td></tr>
+                  <tr class="group-start"><th scope="row">MapAnything</th><td>32.2</td><td>69.1</td></tr>
+                  <tr><th scope="row">Pi3X (SfM prior)</th><td>33.8</td><td>65.2</td></tr>
+                  <tr class="group-start"><th scope="row">Any2Full</th><td>65.3</td><td><span class="score-second">84.1</span></td></tr>
+                  <tr><th scope="row">Murre</th><td>59.5</td><td>81.7</td></tr>
+                  <tr class="group-start"><th scope="row">MASt3R-SfM</th><td>43.9</td><td>64.6</td></tr>
+                  <tr><th scope="row">BLASt3R</th><td>24.6</td><td>50.8</td></tr>
+                  <tr><th scope="row">GGPT (w/ DA3)</th><td>67.0</td><td>83.1</td></tr>
+                  <tr><th scope="row">GGPT (w/ Pi3X)</th><td>62.6</td><td>76.6</td></tr>
+                  <tr class="ours group-start"><th scope="row">Refin3R (w/ DA3)</th><td><strong class="score-best">72.3</strong></td><td><strong class="score-best">87.4</strong></td></tr>
+                  <tr class="ours"><th scope="row">Refin3R (w/ Pi3X)</th><td><span class="score-second">68.9</span></td><td>83.7</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="table-note"><strong>Bold</strong>: best. <span class="score-second">Underlined</span>: second best. <a href="assets/paper/refin3r.pdf?v=29244873b035#page=8" target="_blank" rel="noopener">Table 2 of the paper</a>.</p>
+          </div>
+        </div>
+        <button type="button" class="carousel-arrow carousel-next" id="next-quantitative" aria-label="Next quantitative dataset" aria-controls="quantitative-stage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+        </div>
+        <div class="carousel-controls"><span class="carousel-count" id="quantitative-count" aria-hidden="true">1 / 5</span></div>
+        <p class="sr-only" id="quantitative-status" role="status" aria-live="polite" aria-atomic="true">Showing ScanNet++ results.</p>
+      </div>
+    </section>
+
+    <section class="section section-bordered" id="contributions" aria-labelledby="contributions-title">
+      <div class="container">
+        <h2 id="contributions-title">Contributions</h2>
+        <ol class="contributions-list">
+          <li><strong>Dense and accurate reconstruction.</strong> Refin3R improves the accuracy of feed-forward predictions while preserving dense scene coverage.</li>
+          <li><strong>Effective across diverse scenes.</strong> Experiments demonstrate state-of-the-art reconstruction accuracy across diverse scenes.</li>
+          <li><strong>Efficient refinement.</strong> A fast refinement step improves reconstruction accuracy with little additional processing time.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section citation-section" id="bibtex" aria-labelledby="bibtex-title">
+      <div class="container">
+        <div class="citation-heading">
+          <h2 id="bibtex-title">BibTeX</h2>
+          <div class="citation-actions" hidden>
+            <a href="assets/data/refin3r.bib" download>Download .bib</a>
+            <button class="button copy-button" id="copy-bibtex" type="button" hidden>Copy</button>
+          </div>
+        </div>
+        <!-- Add the official BibTeX here after the arXiv release. -->
+        <pre tabindex="0" aria-label="BibTeX citation"><code id="citation"></code><span class="citation-placeholder" id="citation-placeholder">To be updated</span></pre>
+        <p class="sr-only" id="copy-status" role="status"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Refin3R <span aria-hidden="true">·</span> <a href="https://cvlab.kaist.ac.kr/">KAIST Computer Vision Lab</a></p>
+    <p class="template-credit">Page design inspired by <a href="https://nerfies.github.io/">Nerfies</a>.</p>
+  </footer>
+  </div>
+
+  <dialog id="figure-dialog" aria-labelledby="figure-dialog-title">
+    <div class="dialog-toolbar">
+      <h2 id="figure-dialog-title">Figure</h2>
+      <div>
+        <a id="figure-pdf" target="_blank" rel="noopener">PDF ↗</a>
+        <button type="button" id="close-figure" class="button" autofocus aria-label="Close enlarged figure">Close <span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+    <div class="dialog-image-container" tabindex="0" aria-label="Enlarged figure, scroll to inspect details">
+      <img id="enlarged-figure" alt="">
+      <svg id="enlarged-scene" class="scene-svg" role="img" aria-labelledby="enlarged-scene-title" hidden>
+        <title id="enlarged-scene-title"></title>
+        <defs><clipPath id="enlarged-scene-clip"><rect/></clipPath></defs>
+        <image href="assets/images/qualitative-scenes.webp" x="0" y="-12.2283" width="3200" height="1579.6575" preserveAspectRatio="none" clip-path="url(#enlarged-scene-clip)"/>
+      </svg>
+    </div>
+  </dialog>
+</body>
+</html>
